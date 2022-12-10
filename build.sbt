@@ -1,56 +1,42 @@
-val catsVersion           = "2.6.1"
-val catsEffectVersion     = "3.1.1"
-val fs2Version            = "3.0.4"
-val scodecBitsVersion     = "1.1.27"
-val scodecCoreVersion     = "1.11.8"
-val scodecStreamVersion   = "3.0.1"
-val specs2Version         = "4.10.6"
+val catsVersion           = "2.9.0"
+val catsEffectVersion     = "3.4.2"
+val fs2Version            = "3.4.0"
+val scodecBitsVersion     = "1.1.34"
+val scodecCoreVersion     = "2.2.0"
+val specs2Version         = "4.17.0"
 val tikaVersion           = "1.24"
-val scalacheckVersion     = "1.14.1"
-val catsEffectTestVersion = "1.1.1"
+val scalacheckVersion     = "1.15.4"
 val log4catsVersion       = "2.1.1"
 val logbackVersion        = "1.2.3"
 
-ThisBuild / scalafixScalaBinaryVersion := (ThisBuild / scalaBinaryVersion).value
-ThisBuild / semanticdbEnabled := true
-ThisBuild / semanticdbVersion := scalafixSemanticdb.revision
 
 lazy val root = (project in file("."))
   .settings(
     organization := "com.minosiants",
     name := "pencil",
-    scalaVersion := "2.12.12",
-    crossScalaVersions := Seq("2.12.12", "2.13.6"),
+    scalaVersion := "3.2.1",
+    crossScalaVersions := Seq(scalaVersion.value),
     scalacOptions ++= Seq(
-      "-language:experimental.macros",
-      "-Yrangepos",
-      "-Ywarn-unused",
-      "-Xlint",
-      "-P:semanticdb:synthetics:on"
+       "-language:implicitConversions",
+       "-Ykind-projector",
+       "-source:3.0-migration"
     ),
-    javacOptions ++= Seq("-source", "1.11", "-target", "1.8"),
     libraryDependencies ++= Seq(
       "org.typelevel"   %% "cats-core"         % catsVersion,
       "org.typelevel"   %% "cats-effect"       % catsEffectVersion,
       "co.fs2"          %% "fs2-core"          % fs2Version,
+      "co.fs2"          %% "fs2-scodec"        % fs2Version,
       "co.fs2"          %% "fs2-io"            % fs2Version,
       "org.scodec"      %% "scodec-bits"       % scodecBitsVersion,
       "org.scodec"      %% "scodec-core"       % scodecCoreVersion,
       "org.typelevel"   %% "log4cats-core"     % log4catsVersion,
       "org.apache.tika" % "tika-core"          % tikaVersion,
-      "org.scala-lang"  % "scala-reflect"      % scalaVersion.value,
       "org.specs2"      %% "specs2-core"       % specs2Version % "test",
       "org.specs2"      %% "specs2-scalacheck" % specs2Version % Test,
       "org.scalacheck"  %% "scalacheck"        % scalacheckVersion % "test",
-      "org.scodec"      %% "scodec-stream"     % scodecStreamVersion % "test",
       "ch.qos.logback"  % "logback-classic"    % logbackVersion % "test",
       "org.typelevel"   %% "log4cats-slf4j"    % log4catsVersion % "test"
     ),
-    addCompilerPlugin(
-      "org.typelevel" %% "kind-projector" % "0.13.0" cross CrossVersion.full
-    ),
-    addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
-    addCompilerPlugin(scalafixSemanticdb),
     publishTo := sonatypePublishToBundle.value
   )
   .settings(releaseProcessSettings)

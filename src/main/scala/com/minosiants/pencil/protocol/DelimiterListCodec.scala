@@ -17,13 +17,14 @@
 package com.minosiants.pencil
 package protocol
 
-import scodec.{ Attempt, Codec, DecodeResult, SizeBound }
-import scodec.bits.{ BitVector, ByteVector }
+import scodec.{Attempt, Codec, DecodeResult, Encoder, SizeBound}
+import scodec.bits.{BitVector, ByteVector}
 
 final case class DelimiterListCodec[A](
     delimiter: ByteVector,
     valueCodec: Codec[A]
 ) extends Codec[List[A]] {
+
 
   override def decode(bits: BitVector): Attempt[DecodeResult[List[A]]] = {
 
@@ -46,7 +47,7 @@ final case class DelimiterListCodec[A](
   }
 
   override def encode(value: List[A]): Attempt[BitVector] =
-    Codec.encodeSeq(valueCodec)(value)
+    valueCodec.encodeAll(value)
 
   override def sizeBound: SizeBound = SizeBound.unknown
 }

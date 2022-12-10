@@ -15,13 +15,13 @@
  */
 
 package com.minosiants.pencil
-import cats.effect.{ Async, Concurrent, Resource }
-import com.comcast.ip4s.{ Host, IpLiteralSyntax, SocketAddress }
-import com.minosiants.pencil.data.Email.{ MimeEmail, TextEmail }
-import com.minosiants.pencil.data.{ Host => PHost, _ }
+import cats.effect.{Async, Concurrent, Resource}
+import com.comcast.ip4s.{Host, Port, SocketAddress}
+import com.minosiants.pencil.data.Email.{MimeEmail, TextEmail}
+import com.minosiants.pencil.data.{Host => PHost, _}
 import com.minosiants.pencil.protocol._
 import fs2.io.net.tls.TLSContext
-import fs2.io.net.{ Network, Socket }
+import fs2.io.net.{Network, Socket}
 import org.typelevel.log4cats.Logger
 
 import java.time.Instant
@@ -48,7 +48,7 @@ trait Client[F[_]] {
 object Client {
 
   def apply[F[_]: Async: Concurrent: Network](
-      address: SocketAddress[Host] = SocketAddress(host"localhost", port"25"),
+      address: SocketAddress[Host] = SocketAddress(Host.fromString("localhost").get, Port.fromInt(25).get),
       credentials: Option[Credentials] = None
   )(
       tlsContext: TLSContext[F],
@@ -110,7 +110,7 @@ object Client {
       ): Smtp[F, Replies] =
         for {
           _ <- Smtp.startTls[F]()
-          r <- Smtp.local { req: Request[F] =>
+          r <- Smtp.local { (req: Request[F]) =>
             Request(
               req.email,
               tls,

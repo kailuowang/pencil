@@ -19,10 +19,9 @@ package com.minosiants
 import java.nio.charset.StandardCharsets
 
 import cats.data.Kleisli
-import com.minosiants.pencil.syntax.LiteralsSyntax
 import scodec.bits.{ BitVector, ByteVector }
 
-package object pencil extends LiteralsSyntax {
+package object pencil {
 
   type Smtp[F[_], A] = Kleisli[F, Request[F], A]
 

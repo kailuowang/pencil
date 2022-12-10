@@ -15,16 +15,17 @@ class SmtpIntegrationSpec extends SpecificationLike {
     "send text email" in {
 
       val email = Email.mime(
-        from"user1@mydomain.tld",
-        to"user1@example.com",
-        subject"привет",
+        From(Mailbox.unsafeFromString("user1@mydomain.tld")),
+        To(Mailbox.unsafeFromString("user1@example.com")),
+        Subject("привет"),
         Body.Utf8("hi there")
-      ) + attachment"files/jpeg-sample.jpg"
+      )
 
           val sendEmail = for {
+            attachment <- Attachment.fromString[IO]("files/jpeg-sample.jpg")
             tls <- Network[IO].tlsContext.system
               client = Client[IO]()(tls, logger)
-              response <- client.send(email)
+              response <- client.send(email + attachment)
             }yield response
 
       sendEmail.attempt.unsafeRunSync() match {
