@@ -12,7 +12,7 @@ val logbackVersion        = "1.2.3"
 
 lazy val root = (project in file("."))
   .settings(
-    organization := "com.minosiants",
+    organization := "com.kailuowang",
     name := "pencil",
     scalaVersion := "3.2.1",
     crossScalaVersions := Seq(scalaVersion.value),
