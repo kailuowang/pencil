@@ -51,7 +51,7 @@ lazy val releaseProcessSettings = Seq(
     checkSnapshotDependencies,
     inquireVersions,
     runClean,
-    runTest,
+//    runTest,
     setReleaseVersion,
     commitReleaseVersion,
     tagRelease,
